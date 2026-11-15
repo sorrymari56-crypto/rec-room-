@@ -6,45 +6,151 @@
   <title>RecVerse 3D — Dorm Room & Wrist Watch</title>
   <script src="https://cloudflare.com"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
-    body { overflow: hidden; background: #0f172a; color: white; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Trebuchet MS", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+    body { overflow: hidden; background: #f27420; color: white; }
     canvas { display: block; width: 100vw; height: 100vh; }
+    .hidden { display: none !important; }
 
-    /* ================= 1. LOGIN / PROFILE SCREEN ================= */
-    .login-overlay {
+    /* ================= 1. EXACT ORANGE TILED LOGIN SCREEN ================= */
+    .orange-screen {
       position: fixed; inset: 0; z-index: 40;
-      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.78) 0%, rgba(9, 13, 22, 0.94) 100%);
-      backdrop-filter: blur(10px);
-      display: flex; align-items: center; justify-content: center; padding: 20px;
+      background-color: #f47a24;
+      background-image: url("data:image/svg+xml,%3Csvg width='90' height='90' viewBox='0 0 90 90' xmlns='http://w3.org transform='rotate(-22 45 45)' fill='none' stroke='%23ffffff' stroke-opacity='0.16' stroke-width='4'%3E%3Crect x='22' y='20' width='46' height='50' rx='10'/%3E%3Cline x1='22' y1='34' x2='68' y2='34'/%3E%3Cpath d='M33 48 Q45 58 57 48' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E");
+      display: flex; align-items: center; justify-content: center; padding: 24px;
     }
-    .login-card {
-      background: rgba(15, 23, 42, 0.95); border: 2px solid #38bdf8;
-      border-radius: 24px; max-width: 420px; width: 100%; padding: 32px 28px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(56, 189, 248, 0.25);
-      text-align: center;
+
+    .login-container {
+      max-width: 960px; width: 100%;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 30px;
     }
-    .game-logo { font-size: 32px; font-weight: 900; letter-spacing: -1px; color: #f8fafc; margin-bottom: 4px; }
-    .game-logo span { color: #f97316; }
-    .login-sub { font-size: 13px; color: #94a3b8; margin-bottom: 22px; }
-    .login-input {
-      width: 100%; background: #1e293b; border: 2px solid #334155; color: white;
-      padding: 12px 16px; border-radius: 12px; font-size: 16px; font-weight: 700;
-      text-align: center; outline: none; margin-bottom: 16px;
+
+    /* Left Black Avatar Silhouette with Drop Shadow */
+    .silhouette-wrap {
+      position: relative; display: flex; flex-direction: column; align-items: center;
+      filter: drop-shadow(12px 14px 0px rgba(0, 0, 0, 0.25));
+      transform: scale(1.05);
     }
-    .login-input:focus { border-color: #38bdf8; }
-    .swatch-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 22px; }
-    .swatch {
-      width: 34px; height: 34px; border-radius: 50%; border: 3px solid transparent;
-      cursor: pointer; transition: 0.15s;
+    .sil-spike {
+      width: 0; height: 0;
+      border-left: 16px solid transparent; border-right: 22px solid transparent;
+      border-bottom: 36px solid #0c0c0e;
+      margin-bottom: -14px; margin-right: 16px; transform: rotate(-18deg);
     }
-    .swatch.selected { border-color: white; transform: scale(1.15); }
-    .play-btn {
-      width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
-      color: white; border: none; padding: 14px; border-radius: 14px;
-      font-size: 17px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px;
-      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); transition: 0.15s;
+    .sil-head {
+      width: 118px; height: 132px; background: #0c0c0e;
+      border-radius: 52% 52% 46% 46%; margin-bottom: 16px;
     }
-    .play-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .sil-upper {
+      display: flex; align-items: flex-end; gap: 18px;
+    }
+    .sil-torso {
+      width: 158px; height: 215px; background: #0c0c0e;
+      border-radius: 42px 42px 16px 16px;
+    }
+    .sil-hand-left {
+      width: 28px; height: 64px; background: #0c0c0e;
+      border-radius: 10px; margin-bottom: 4px;
+    }
+    .sil-hand-right {
+      width: 32px; height: 76px; background: #0c0c0e;
+      border-radius: 10px; margin-bottom: 14px; transform: rotate(6deg);
+    }
+
+    /* Right White Card + Overlapping Stacked Logo */
+    .card-column {
+      display: flex; flex-direction: column; align-items: center;
+      width: 100%; max-width: 430px;
+    }
+
+    .stacked-logo {
+      display: flex; align-items: flex-start; gap: 6px;
+      background: #ffffff; padding: 10px 18px 12px; border-radius: 20px;
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.22);
+      margin-bottom: -26px; z-index: 5;
+    }
+    .logo-words {
+      display: flex; flex-direction: column; font-weight: 900;
+      font-size: 40px; line-height: 0.88; color: #f47a24; letter-spacing: -1.5px;
+    }
+    .logo-tv {
+      width: 56px; height: 62px; background: #f47a24; border-radius: 12px;
+      padding: 5px; display: flex; flex-direction: column; justify-content: space-between;
+      margin-top: -12px; border: 4px solid #ffffff;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.18);
+    }
+    .tv-top-bar { height: 7px; background: #ffffff; border-radius: 3px; }
+    .tv-face {
+      flex: 1; background: #ffffff; border-radius: 6px; margin-top: 4px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .tv-smile {
+      width: 26px; height: 12px; border-bottom: 4px solid #f47a24; border-radius: 0 0 20px 20px;
+      margin-top: 4px;
+    }
+
+    .white-login-card {
+      background: #fcf7f2; width: 100%; border-radius: 16px;
+      padding: 52px 34px 26px;
+      box-shadow: 0 12px 0 rgba(0, 0, 0, 0.25);
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .active-user-pill {
+      font-size: 13px; font-weight: 800; color: #78716c; margin-bottom: 14px;
+      background: #f3ece4; padding: 5px 14px; border-radius: 999px;
+    }
+
+    .btn-rec-play {
+      width: 100%;
+      background: linear-gradient(90deg, #ff7e29 0%, #ea4c08 100%);
+      color: #ffffff; border: none; padding: 16px; border-radius: 10px;
+      font-size: 18px; font-weight: 900; letter-spacing: 0.8px; cursor: pointer;
+      box-shadow: 0 4px 0 #b83700; transition: 0.12s; margin-bottom: 14px;
+    }
+    .btn-rec-play:hover { filter: brightness(1.06); transform: translateY(-1px); }
+    .btn-rec-play:active { transform: translateY(2px); box-shadow: 0 1px 0 #b83700; }
+
+    .btn-rec-switch {
+      width: 100%;
+      background: #fdf2ea; color: #d9531e;
+      border: 2px solid #e89b74; padding: 12px; border-radius: 10px;
+      font-size: 14px; font-weight: 900; letter-spacing: 0.5px; cursor: pointer;
+      transition: 0.12s; margin-bottom: 18px;
+    }
+    .btn-rec-switch:hover { background: #fae3d4; }
+
+    .lang-row {
+      display: flex; align-items: center; gap: 8px; color: #44403c;
+      font-size: 14px; font-weight: 700; cursor: pointer; padding: 4px 10px; border-radius: 8px;
+    }
+    .lang-row:hover { background: #f3ece4; }
+    .lang-icon {
+      border: 1.5px solid #44403c; border-radius: 4px; padding: 1px 5px; font-size: 11px; font-weight: 900;
+    }
+
+    /* Switch Account Modal on Login Screen */
+    .switch-panel {
+      width: 100%; background: #fff; border: 2px solid #e89b74; border-radius: 12px;
+      padding: 14px; margin-bottom: 14px; text-align: center;
+    }
+    .switch-input {
+      width: 100%; padding: 10px; border: 2px solid #cbd5e1; border-radius: 8px;
+      font-size: 15px; font-weight: 800; color: #1e293b; text-align: center; margin-bottom: 10px; outline: none;
+    }
+    .switch-input:focus { border-color: #f47a24; }
+    .mini-swatches { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .mini-swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #cbd5e1; cursor: pointer; }
+
+    /* Loading Progress Bar Screen */
+    .loading-box { text-align: center; width: 100%; max-width: 460px; }
+    .prog-track {
+      width: 100%; height: 16px; background: rgba(0, 0, 0, 0.25);
+      border-radius: 999px; padding: 3px; margin: 28px 0 12px;
+      border: 2px solid rgba(255, 255, 255, 0.65);
+    }
+    .prog-fill {
+      height: 100%; width: 0%; background: #ffffff; border-radius: 999px; transition: width 0.25s;
+    }
 
     /* ================= 2. IN-GAME HUD ================= */
     .hud-top {
@@ -52,7 +158,7 @@
       display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none;
     }
     .pill-box {
-      background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.82); backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px;
       padding: 10px 16px; pointer-events: auto;
     }
@@ -81,26 +187,25 @@
     }
     .watch-overlay.open { display: flex; }
     .watch-frame {
-      background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
-      border: 3px solid #38bdf8; border-radius: 26px;
-      width: 100%; max-width: 480px; padding: 22px;
-      box-shadow: 0 0 40px rgba(56, 189, 248, 0.35);
+      background: #fcf7f2; color: #1e293b;
+      border: 5px solid #e7d5be; border-radius: 26px;
+      width: 100%; max-width: 500px; padding: 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
     }
     .watch-header {
       display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom: 12px; margin-bottom: 16px;
+      border-bottom: 2px solid #e7d5be; padding-bottom: 12px; margin-bottom: 16px;
     }
     .watch-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
     .w-tab {
-      background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #94a3b8;
+      background: #f3ece4; border: 2px solid #e7d5be; color: #57534e;
       padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer;
     }
-    .w-tab.active { background: #0284c7; color: white; border-color: #38bdf8; }
+    .w-tab.active { background: #f47a24; color: white; border-color: #ea580c; }
     .room-card {
-      background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; border-radius: 14px;
+      background: #ffffff; border: 2px solid #e7d5be; border-radius: 14px;
       padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
-    .hidden { display: none !important; }
     #toast {
       position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
       background: #f97316; color: white; padding: 8px 18px; border-radius: 999px;
@@ -110,88 +215,11 @@
 </head>
 <body>
 
-  <!-- 1. LOGIN / PROFILE SELECT SCREEN -->
-  <div id="loginScreen" class="login-overlay">
-    <div class="login-card">
-      <div class="game-logo">Rec<span>Verse</span> 3D</div>
-      <p class="login-sub">Choose your avatar & enter your 3D Dorm Room</p>
-
-      <input id="loginNameInput" class="login-input" type="text" value="Jamari" maxlength="16" placeholder="Enter Player Name">
-
-      <div style="font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:8px;">SELECT OUTFIT COLOR</div>
-      <div class="swatch-row" id="loginSwatches">
-        <div class="swatch selected" style="background:#f97316;" onclick="pickColor(0xf97316, this)"></div>
-        <div class="swatch" style="background:#3b82f6;" onclick="pickColor(0x3b82f6, this)"></div>
-        <div class="swatch" style="background:#10b981;" onclick="pickColor(0x10b981, this)"></div>
-        <div class="swatch" style="background:#a855f7;" onclick="pickColor(0xa855f7, this)"></div>
-        <div class="swatch" style="background:#ef4444;" onclick="pickColor(0xef4444, this)"></div>
-      </div>
-
-      <button class="play-btn" onclick="startGame()">ENTER DORM ROOM →</button>
-    </div>
-  </div>
-
-  <!-- 2. IN-GAME HUD -->
-  <div id="hudTop" class="hud-top hidden">
-    <div class="pill-box">
-      <div style="font-weight:800; font-size:14px; color:#38bdf8;" id="roomTitleBadge">🏠 My Dorm Room</div>
-      <div style="font-size:11px; color:#cbd5e1; margin-top:4px;">
-        <span class="key">WASD</span> Move • <span class="key">Space</span> Jump • <span class="key">Drag</span> Look • <span class="key">E</span> Grab/Throw • <span class="key">Tab</span> Watch
-      </div>
-    </div>
-    <div class="pill-box" style="text-align:right;">
-      <div style="font-size:11px; color:#94a3b8;">HOOP SCORE</div>
-      <div style="font-size:20px; font-weight:900; color:#f97316;" id="scoreDisplay">0</div>
-    </div>
-  </div>
-
-  <div id="toast">Message</div>
-
-  <div id="hudBottom" class="hud-bottom hidden">
-    <button class="hud-btn watch" onclick="toggleWatch()">⌚ Open Watch (Tab)</button>
-    <button class="hud-btn orange" onclick="toggleBall()">🏐 Grab / Throw (E)</button>
-    <button class="hud-btn" onclick="triggerWave()">👋 Wave</button>
-  </div>
-
-  <!-- 3. HOLOGRAPHIC WRIST WATCH MENU -->
-  <div id="watchOverlay" class="watch-overlay">
-    <div class="watch-frame">
-      <div class="watch-header">
-        <div>
-          <div style="font-size:11px; color:#38bdf8; font-weight:800;">RECVERSE OS • WRIST WATCH</div>
-          <div style="font-size:18px; font-weight:900;" id="watchUserTitle">Jamari</div>
-        </div>
-        <button class="hud-btn" onclick="toggleWatch()">✕ Close</button>
-      </div>
-
-      <div class="watch-tabs">
-        <button class="w-tab active" onclick="switchWatchTab('play', this)">🌍 Rooms</button>
-        <button class="w-tab" onclick="switchWatchTab('avatar', this)">👕 Outfit</button>
-        <button class="w-tab" onclick="switchWatchTab('tools', this)">🎒 Backpack</button>
-      </div>
-
-      <!-- Watch Tab 1: Teleport Rooms -->
-      <div id="wtab-play">
-        <div class="room-card">
-          <div>
-            <div style="font-weight:800; font-size:15px;">🏠 Personal Dorm Room</div>
-            <div style="font-size:12px; color:#94a3b8;">Loft bed, gaming desk, sunset window & mini hoop</div>
-          </div>
-          <button class="hud-btn watch" onclick="loadRoom('dorm')">Go</button>
-        </div>
-        <div class="room-card">
-          <div>
-            <div style="font-weight:800; font-size:15px;">🏟️ Rec Center Lobby</div>
-            <div style="font-size:12px; color:#94a3b8;">Full dodgeball court, stage & neon arena</div>
-          </div>
-          <button class="hud-btn orange" onclick="loadRoom('lobby')">Go</button>
-        </div>
-      </div>
-
-      <!-- Watch Tab 2: Avatar Outfit -->
-      <div id="wtab-avatar" class="hidden">
-        <div style="font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:700;">CHANGE SHIRT COLOR</div>
-        <div class="swatch-row" style="justify-content:flex-start;">
-          <div class="swatch" style="background:#f97316;" onclick="setShirtColor(0xf97316)"></div>
-          <div class="swatch" style="background:#3b82f6;" onclick="setShirtColor(0x3b82f6)"></div>
-          <div class="swatch" style="background:#10b981;" onclick="setShirtColor(0x10b981)"></div>
+  <!-- 1. ORANGE PATTERNED LOGIN SCREEN (Matches Reference Photo) -->
+  <div id="loginScreen" class="orange-screen">
+    <div class="login-container">
+      <!-- Left Silhouette -->
+      <div class="silhouette-wrap">
+        <div class="sil-spike"></div>
+        <div class="sil-head"></div>
+        <div class="sil-upper">
