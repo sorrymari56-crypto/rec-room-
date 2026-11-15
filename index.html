@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecVerse 3D — Dorm Room & Wrist Watch</title>
+  <script src="https://cloudflare.com"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+    body { overflow: hidden; background: #0f172a; color: white; }
+    canvas { display: block; width: 100vw; height: 100vh; }
+
+    /* ================= 1. LOGIN / PROFILE SCREEN ================= */
+    .login-overlay {
+      position: fixed; inset: 0; z-index: 40;
+      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.78) 0%, rgba(9, 13, 22, 0.94) 100%);
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .login-card {
+      background: rgba(15, 23, 42, 0.95); border: 2px solid #38bdf8;
+      border-radius: 24px; max-width: 420px; width: 100%; padding: 32px 28px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 30px rgba(56, 189, 248, 0.25);
+      text-align: center;
+    }
+    .game-logo { font-size: 32px; font-weight: 900; letter-spacing: -1px; color: #f8fafc; margin-bottom: 4px; }
+    .game-logo span { color: #f97316; }
+    .login-sub { font-size: 13px; color: #94a3b8; margin-bottom: 22px; }
+    .login-input {
+      width: 100%; background: #1e293b; border: 2px solid #334155; color: white;
+      padding: 12px 16px; border-radius: 12px; font-size: 16px; font-weight: 700;
+      text-align: center; outline: none; margin-bottom: 16px;
+    }
+    .login-input:focus { border-color: #38bdf8; }
+    .swatch-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 22px; }
+    .swatch {
+      width: 34px; height: 34px; border-radius: 50%; border: 3px solid transparent;
+      cursor: pointer; transition: 0.15s;
+    }
+    .swatch.selected { border-color: white; transform: scale(1.15); }
+    .play-btn {
+      width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
+      color: white; border: none; padding: 14px; border-radius: 14px;
+      font-size: 17px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px;
+      box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4); transition: 0.15s;
+    }
+    .play-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+    /* ================= 2. IN-GAME HUD ================= */
+    .hud-top {
+      position: fixed; top: 16px; left: 16px; right: 16px;
+      display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none;
+    }
+    .pill-box {
+      background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 14px;
+      padding: 10px 16px; pointer-events: auto;
+    }
+    .key { background: #1e293b; border: 1px solid #475569; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 800; color: #38bdf8; }
+
+    .hud-bottom {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px);
+      border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 999px;
+      padding: 8px 14px; display: flex; gap: 10px; align-items: center;
+    }
+    .hud-btn {
+      background: #1e293b; color: white; border: 1px solid #334155;
+      padding: 9px 16px; border-radius: 999px; font-size: 13px; font-weight: 700;
+      cursor: pointer; transition: 0.15s;
+    }
+    .hud-btn:hover { background: #334155; }
+    .hud-btn.watch { background: #0284c7; border-color: #38bdf8; }
+    .hud-btn.orange { background: #f97316; border-color: #fb923c; }
+
+    /* ================= 3. HOLOGRAPHIC WRIST WATCH UI ================= */
+    .watch-overlay {
+      position: fixed; inset: 0; z-index: 30;
+      background: rgba(9, 13, 22, 0.65); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .watch-overlay.open { display: flex; }
+    .watch-frame {
+      background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
+      border: 3px solid #38bdf8; border-radius: 26px;
+      width: 100%; max-width: 480px; padding: 22px;
+      box-shadow: 0 0 40px rgba(56, 189, 248, 0.35);
+    }
+    .watch-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(56, 189, 248, 0.3); padding-bottom: 12px; margin-bottom: 16px;
+    }
+    .watch-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    .w-tab {
+      background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #94a3b8;
+      padding: 10px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer;
+    }
+    .w-tab.active { background: #0284c7; color: white; border-color: #38bdf8; }
+    .room-card {
+      background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; border-radius: 14px;
+      padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+    .hidden { display: none !important; }
+    #toast {
+      position: fixed; top: 75px; left: 50%; transform: translateX(-50%);
+      background: #f97316; color: white; padding: 8px 18px; border-radius: 999px;
+      font-size: 13px; font-weight: 800; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 50;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. LOGIN / PROFILE SELECT SCREEN -->
+  <div id="loginScreen" class="login-overlay">
+    <div class="login-card">
+      <div class="game-logo">Rec<span>Verse</span> 3D</div>
+      <p class="login-sub">Choose your avatar & enter your 3D Dorm Room</p>
+
+      <input id="loginNameInput" class="login-input" type="text" value="Jamari" maxlength="16" placeholder="Enter Player Name">
+
+      <div style="font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:8px;">SELECT OUTFIT COLOR</div>
+      <div class="swatch-row" id="loginSwatches">
+        <div class="swatch selected" style="background:#f97316;" onclick="pickColor(0xf97316, this)"></div>
+        <div class="swatch" style="background:#3b82f6;" onclick="pickColor(0x3b82f6, this)"></div>
+        <div class="swatch" style="background:#10b981;" onclick="pickColor(0x10b981, this)"></div>
+        <div class="swatch" style="background:#a855f7;" onclick="pickColor(0xa855f7, this)"></div>
+        <div class="swatch" style="background:#ef4444;" onclick="pickColor(0xef4444, this)"></div>
+      </div>
+
+      <button class="play-btn" onclick="startGame()">ENTER DORM ROOM →</button>
+    </div>
+  </div>
+
+  <!-- 2. IN-GAME HUD -->
+  <div id="hudTop" class="hud-top hidden">
+    <div class="pill-box">
+      <div style="font-weight:800; font-size:14px; color:#38bdf8;" id="roomTitleBadge">🏠 My Dorm Room</div>
+      <div style="font-size:11px; color:#cbd5e1; margin-top:4px;">
+        <span class="key">WASD</span> Move • <span class="key">Space</span> Jump • <span class="key">Drag</span> Look • <span class="key">E</span> Grab/Throw • <span class="key">Tab</span> Watch
+      </div>
+    </div>
+    <div class="pill-box" style="text-align:right;">
+      <div style="font-size:11px; color:#94a3b8;">HOOP SCORE</div>
+      <div style="font-size:20px; font-weight:900; color:#f97316;" id="scoreDisplay">0</div>
+    </div>
+  </div>
+
+  <div id="toast">Message</div>
+
+  <div id="hudBottom" class="hud-bottom hidden">
+    <button class="hud-btn watch" onclick="toggleWatch()">⌚ Open Watch (Tab)</button>
+    <button class="hud-btn orange" onclick="toggleBall()">🏐 Grab / Throw (E)</button>
+    <button class="hud-btn" onclick="triggerWave()">👋 Wave</button>
+  </div>
+
+  <!-- 3. HOLOGRAPHIC WRIST WATCH MENU -->
+  <div id="watchOverlay" class="watch-overlay">
+    <div class="watch-frame">
+      <div class="watch-header">
+        <div>
+          <div style="font-size:11px; color:#38bdf8; font-weight:800;">RECVERSE OS • WRIST WATCH</div>
+          <div style="font-size:18px; font-weight:900;" id="watchUserTitle">Jamari</div>
+        </div>
+        <button class="hud-btn" onclick="toggleWatch()">✕ Close</button>
+      </div>
+
+      <div class="watch-tabs">
+        <button class="w-tab active" onclick="switchWatchTab('play', this)">🌍 Rooms</button>
+        <button class="w-tab" onclick="switchWatchTab('avatar', this)">👕 Outfit</button>
+        <button class="w-tab" onclick="switchWatchTab('tools', this)">🎒 Backpack</button>
+      </div>
+
+      <!-- Watch Tab 1: Teleport Rooms -->
+      <div id="wtab-play">
+        <div class="room-card">
+          <div>
+            <div style="font-weight:800; font-size:15px;">🏠 Personal Dorm Room</div>
+            <div style="font-size:12px; color:#94a3b8;">Loft bed, gaming desk, sunset window & mini hoop</div>
+          </div>
+          <button class="hud-btn watch" onclick="loadRoom('dorm')">Go</button>
+        </div>
+        <div class="room-card">
+          <div>
+            <div style="font-weight:800; font-size:15px;">🏟️ Rec Center Lobby</div>
+            <div style="font-size:12px; color:#94a3b8;">Full dodgeball court, stage & neon arena</div>
+          </div>
+          <button class="hud-btn orange" onclick="loadRoom('lobby')">Go</button>
+        </div>
+      </div>
+
+      <!-- Watch Tab 2: Avatar Outfit -->
+      <div id="wtab-avatar" class="hidden">
+        <div style="font-size:12px; color:#94a3b8; margin-bottom:8px; font-weight:700;">CHANGE SHIRT COLOR</div>
+        <div class="swatch-row" style="justify-content:flex-start;">
+          <div class="swatch" style="background:#f97316;" onclick="setShirtColor(0xf97316)"></div>
+          <div class="swatch" style="background:#3b82f6;" onclick="setShirtColor(0x3b82f6)"></div>
+          <div class="swatch" style="background:#10b981;" onclick="setShirtColor(0x10b981)"></div>
