@@ -11,7 +11,7 @@
     canvas { display: block; width: 100vw; height: 100vh; }
     .hidden { display: none !important; }
 
-    /* ================= 1. EXACT ORANGE TILED LOGIN SCREEN ================= */
+    /* ================= 1. ORANGE TILED LOGIN SCREEN ================= */
     .orange-screen {
       position: fixed; inset: 0; z-index: 40;
       background-color: #f47a24;
@@ -24,7 +24,7 @@
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 30px;
     }
 
-    /* Left Black Avatar Silhouette with Drop Shadow */
+    /* Left Black Avatar Silhouette */
     .silhouette-wrap {
       position: relative; display: flex; flex-direction: column; align-items: center;
       filter: drop-shadow(12px 14px 0px rgba(0, 0, 0, 0.25));
@@ -128,7 +128,7 @@
       border: 1.5px solid #44403c; border-radius: 4px; padding: 1px 5px; font-size: 11px; font-weight: 900;
     }
 
-    /* Switch Account Modal on Login Screen */
+    /* Switch Account Panel */
     .switch-panel {
       width: 100%; background: #fff; border: 2px solid #e89b74; border-radius: 12px;
       padding: 14px; margin-bottom: 14px; text-align: center;
@@ -138,7 +138,7 @@
       font-size: 15px; font-weight: 800; color: #1e293b; text-align: center; margin-bottom: 10px; outline: none;
     }
     .switch-input:focus { border-color: #f47a24; }
-    .mini-swatches { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; }
+    .mini-swatches { display: flex; justify-content: center; gap: 8px; margin-bottom: 6px; }
     .mini-swatch { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #cbd5e1; cursor: pointer; }
 
     /* Loading Progress Bar Screen */
@@ -154,7 +154,7 @@
 
     /* ================= 2. IN-GAME HUD ================= */
     .hud-top {
-      position: fixed; top: 16px; left: 16px; right: 16px;
+      position: fixed; top: 16px; left: 16px; right: 16px; z-index: 10;
       display: flex; justify-content: space-between; align-items: flex-start; pointer-events: none;
     }
     .pill-box {
@@ -165,7 +165,7 @@
     .key { background: #1e293b; border: 1px solid #475569; padding: 1px 6px; border-radius: 4px; font-size: 11px; font-weight: 800; color: #38bdf8; }
 
     .hud-bottom {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10;
       background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(10px);
       border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 999px;
       padding: 8px 14px; display: flex; gap: 10px; align-items: center;
@@ -179,7 +179,7 @@
     .hud-btn.watch { background: #0284c7; border-color: #38bdf8; }
     .hud-btn.orange { background: #f97316; border-color: #fb923c; }
 
-    /* ================= 3. HOLOGRAPHIC WRIST WATCH UI ================= */
+    /* ================= 3. WRIST WATCH UI ================= */
     .watch-overlay {
       position: fixed; inset: 0; z-index: 30;
       background: rgba(9, 13, 22, 0.65); backdrop-filter: blur(6px);
@@ -215,7 +215,7 @@
 </head>
 <body>
 
-  <!-- 1. ORANGE PATTERNED LOGIN SCREEN (Matches Reference Photo) -->
+  <!-- 1. ORANGE PATTERNED LOGIN SCREEN -->
   <div id="loginScreen" class="orange-screen">
     <div class="login-container">
       <!-- Left Silhouette -->
@@ -223,3 +223,4 @@
         <div class="sil-spike"></div>
         <div class="sil-head"></div>
         <div class="sil-upper">
+          <div class="sil-hand-left"></div>
